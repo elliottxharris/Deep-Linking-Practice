@@ -9,31 +9,29 @@ import SwiftUI
 
 struct HomeView: View {
 	@Environment(AppViewModel.self) private var appViewModel
-	
-	@State private var tabIndex = 0
-	
     var body: some View {
 		@Bindable var appViewModel = appViewModel
 		
-		TabView(selection: $tabIndex) {
-			Tab(value: 0) {
+		TabView(selection: $appViewModel.tabIndex) {
+			Tab("Recipes", systemImage: "carrot", value: 0) {
 				RecipesView()
-			} label: {
-				Label("Recipes", systemImage: "carrot")
 			}
 			
-			Tab(value: 1) {
+			Tab("List", systemImage: "list.bullet", value: 1) {
 				ShoppingListView()
-			} label: {
-				Label("List", systemImage: "list.bullet")
 			}
 			
-			Tab(value: 2) {
+			Tab("Settings", systemImage: "gear", value: 2) {
 				SettingsView()
-			} label: {
-				Label("Settings", systemImage: "gear")
+			}
+			
+			Tab("Search", systemImage: "magnifyingglass", value: 3, role: .search) {
+				NavigationStack {
+					SearchView()
+				}
 			}
 		}
+		.tabViewSearchActivation(.searchTabSelection)
 		.onOpenURL { url in
 			handleUrl(url)
 		}
@@ -42,18 +40,18 @@ struct HomeView: View {
 	private func handleUrl(_ url: URL) {
 		switch url.host() {
 			case "shoppingList":
-				tabIndex = 1
+				appViewModel.tabIndex = 1
 			case "settings":
-				tabIndex = 2
+				appViewModel.tabIndex = 2
 			case "recipe":
-				tabIndex = 0
+				appViewModel.tabIndex = 0
 				if let id = url.pathComponents.last, let recipe = appViewModel.recipes.first(
 					where: { $0.id == UUID(uuidString: id) }
 				) {
 					appViewModel.selectedRecipe = recipe
 				}
 			case "search":
-				tabIndex = 0
+				appViewModel.tabIndex = 0
 				if let components = URLComponents(string: url.absoluteString), let query = components.queryItems, let queryValue = query.first?.value {
 					appViewModel.searchText = queryValue
 				}

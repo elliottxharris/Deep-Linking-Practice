@@ -41,7 +41,7 @@ final class AppViewModel {
 	]
 	
 	var searchText = ""
-	
+	var tabIndex = 0
 	var selectedRecipe: Recipe? = nil
 }
 

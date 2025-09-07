@@ -32,9 +32,6 @@ struct RecipesView: View {
 			.navigationDestination(item: $appViewModel.selectedRecipe) { recipe in
 				RecipeView(recipe: recipe)
 			}
-			.searchable(
-				text: $appViewModel.searchText
-			)
 		}
     }
 }
